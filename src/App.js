@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import './App.css'; // Or your CSS file for styling
-import './LandingPage.css';
-import './Signup.css'
+import './css/App.css'; // Or your CSS file for styling
+import './css/LandingPage.css';
+import './css/Signup.css'
+import { add } from './database'; // Adjust the path to your `database.js` file
 // LandingPage Component
 function LandingPage() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ function Signup() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     // Simple validation
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       setError('Please fill in all fields.');
@@ -44,13 +45,27 @@ function Signup() {
       return;
     }
 
-    // Here you would typically send the data to the backend
-    console.log('Signup data:', { firstName, lastName, email, password });
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setError('Invalid email format.');
+      return;
+    }
+    
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
 
-    // Redirect to login or another page
-    navigate('/login');
-  };
+    const user = { firstName, lastName, email, password };
 
+    try {
+      await add(user);
+      console.log('Signup data successfully added:', user);
+      navigate('/login');       // Redirect to login or another page
+    } 
+    catch (error) {
+      console.error('Failed to add user:', error);
+      setError('An error occurred. Please try again.');
+    } };
 
   return (
     <div className="signup-page">
@@ -89,7 +104,6 @@ function Signup() {
       <button onClick={handleSignup}>Sign Up</button>
     </div>
   );
-    
 }
 
 // Main App Component
@@ -103,8 +117,6 @@ function App() {
       </Routes>
     </Router>
   );
-
-  
 }
 
 export default App;
