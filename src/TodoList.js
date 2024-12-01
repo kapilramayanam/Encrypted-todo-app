@@ -7,9 +7,15 @@ function TodoList() {
   const [shareTaskId, setShareTaskId] = useState(null);
   const [shareEmail, setShareEmail] = useState('');
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (!newTask.trim()) return;
     const task = { id: Date.now(), text: newTask, completed: false, sharedWith: [] };
+    const response = await fetch(`http://localhost:5000/create}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',},
+      body: JSON.stringify({task}),
+      });
     setTasks([...tasks, task]);
     setNewTask('');
   };

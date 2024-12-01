@@ -12,7 +12,7 @@ router.get('/', authenticateToken, (req, res) => {
 });
 
 // Create a Task
-router.post('/', authenticateToken, (req, res) => {
+router.post('/create', authenticateToken, (req, res) => {
   const { text } = req.body;
 
   db.run(

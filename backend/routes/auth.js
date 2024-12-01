@@ -22,8 +22,8 @@ router.post('/signup', async (req, res) => {
 });
 
 // Login Route
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
+router.get('/login', (req, res) => {
+  const { email, password } = req.query;
 
   db.get(`SELECT * FROM users WHERE email = ?`, [email], async (err, user) => {
     if (err || !user) return res.status(404).json({ error: 'User not found.' });
