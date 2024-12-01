@@ -1,6 +1,6 @@
 // src/pages/LandingPage.js
 import React from 'react';
-import './css/LandingPage.css';
+import './LandingPage.css';
 import { Navigate } from 'react-router-dom';
 
 function LandingPage() {
