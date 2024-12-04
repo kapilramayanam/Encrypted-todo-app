@@ -36,4 +36,37 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+router.get('/validate', async (req, res) =>{
+  const {email, pass} = req.query;
+  try{
+    const find = await new Promise((resolve, reject) => {
+      db.get(
+          `
+          SELECT email, password FROM Users
+          WHERE email = ?
+          `,
+          [email],
+          (e, row) => {
+              if (e) {
+                  reject(e); // Reject if there's an error
+              }
+              if (!row) {
+                  return reject(new Error("User not found")); // Reject if user is not found
+              }
+              resolve(row);
+          }
+      );
+      const isMatch = bcrypt.compare(password, user.password);
+      console.log("Match: " + isMatch);
+      
+      if (isMatch == false) {
+        return res.status(401).json('Invalid username or password');
+    }
+    res.send({ message: 'Login successful' });
+  });
+  } catch(error){
+    return res.status(401).json('An error has occurred.');
+  }
+});
+
 module.exports = router;
